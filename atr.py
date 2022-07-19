@@ -57,26 +57,31 @@ class Atr(object):
 
         # Else, separate the graph into subgraphs
         else:
-            # if other type, then we perform the two subcases of the Factoring theorem.
-            # Look for joined cycles, to optimize the choosed edge
+            # Encapsulate the given graph with a list
+            if not isinstance(g, list):
+                g = list(g)
 
-            # TODO: The function .get_a_common_edge doesn't work due a maltfunction of the networkx function minimum_cycle_basis
-            # common_edge = GraphTools.get_a_common_edge(other) # Not working for ordered cycles
-            # e = copy.deepcopy(common_edge)
+            for gi in g:
+                # if other type, then we perform the two subcases of the Factoring theorem.
+                # Look for joined cycles, to optimize the choosed edge
 
-            # TODO: Needs opitmization
-            e = choice(list(g.edges()))  # Random choice
+                # TODO: The function .get_a_common_edge doesn't work due a maltfunction of the networkx function minimum_cycle_basis
+                # common_edge = GraphTools.get_a_common_edge(other) # Not working for ordered cycles
+                # e = copy.deepcopy(common_edge)
 
-            contracted = nx.contracted_edge(g, e, self_loops=False)  # TODO: Expected tuple
+                # TODO: Needs opitmization
+                e = choice(list(g.edges()))  # Random choice
 
-            g.remove_edge(*e)
-            # AdjMaBox.plot(other)
-            rec_deleted = self.relpoly_binary_improved(g, filter_depth)
-            # AdjMaBox.plot(contracted)
+                contracted = nx.contracted_edge(g, e, self_loops=False)  # TODO: Expected tuple
 
-            rec_contracted = self.relpoly_binary_improved(contracted, filter_depth)
+                g.remove_edge(*e)
+                # AdjMaBox.plot(other)
+                rec_deleted = self.relpoly_binary_improved(g, filter_depth)
+                # AdjMaBox.plot(contracted)
 
-            polynomial *= sympy.Poly(p) * rec_contracted + sympy.Poly(1 - p) * rec_deleted
+                rec_contracted = self.relpoly_binary_improved(contracted, filter_depth)
+
+                polynomial *= sympy.Poly(p) * rec_contracted + sympy.Poly(1 - p) * rec_deleted
 
         return polynomial
 
