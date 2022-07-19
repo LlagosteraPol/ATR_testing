@@ -9,13 +9,12 @@ class Atr(object):
     def __init__(self, modules):
         self.modules = modules
 
-    def relpoly_binary_improved(self, g, filter_depth):
+    def relpoly_binary_improved(self, g):
         """
         This is the improved contraction-deletion algorithm. In each recursion, if there exist some method
         that can retrieve the Reliability Polynomial directly or with less cost than another recursion,
         will retrieve it and stop the recursion in that generated sub-graph.
         :param g: networkx graph
-        :param filter_depth: number of subgraphs that will be analyzed to determine if they're ordered cycles
         :return: the reliability Polynomial of the given graph or another execution of the method.
         """
         # print("---------Input graph-----")
@@ -59,9 +58,9 @@ class Atr(object):
         else:
             # Encapsulate the given graph with a list
             if not isinstance(g, list):
-                g = list(g)
+                g_lst = [g]
 
-            for gi in g:
+            for gi in g_lst:
                 # if other type, then we perform the two subcases of the Factoring theorem.
                 # Look for joined cycles, to optimize the choosed edge
 
@@ -70,16 +69,16 @@ class Atr(object):
                 # e = copy.deepcopy(common_edge)
 
                 # TODO: Needs opitmization
-                e = choice(list(g.edges()))  # Random choice
+                e = choice(list(gi.edges()))  # Random choice
 
-                contracted = nx.contracted_edge(g, e, self_loops=False)  # TODO: Expected tuple
+                contracted = nx.contracted_edge(gi, e, self_loops=False)  # TODO: Expected tuple
 
-                g.remove_edge(*e)
+                gi.remove_edge(*e)
                 # AdjMaBox.plot(other)
-                rec_deleted = self.relpoly_binary_improved(g, filter_depth)
+                rec_deleted = self.relpoly_binary_improved(gi)
                 # AdjMaBox.plot(contracted)
 
-                rec_contracted = self.relpoly_binary_improved(contracted, filter_depth)
+                rec_contracted = self.relpoly_binary_improved(contracted)
 
                 polynomial *= sympy.Poly(p) * rec_contracted + sympy.Poly(1 - p) * rec_deleted
 

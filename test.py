@@ -1,27 +1,32 @@
-import networkx as nx
 import matplotlib.pyplot as plt
 import math
+import networkx as nx
+import sympy
+import time
+
+import graphtools
+
+from module_cake import ModuleCake
+from atr import Atr
 
 g = nx.Graph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 1), (1, 5), (2, 6), (3, 7), (4, 8)])
+g2 = nx.Graph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 1), (1, 5), (2, 6), (3, 7)])
 
-cycle_lst = list()
-directed_g = nx.DiGraph(g)
-for cycle in list(nx.simple_cycles(directed_g)):
-    if len(cycle) == len(directed_g.nodes):
-        cycle_lst.append(cycle)
+mc = ModuleCake(g)
 
-hm_cycles = list()
+print(mc.identify())
 
-for cycle in cycle_lst:
-    hm = True
-    tmp_g = nx.cycle_graph(cycle)
-    for node in tmp_g.nodes():
-        nei = g.neighbors(node)
-        for n in nei:
-            short_len = nx.shortest_path_length(tmp_g, node, n)
-            if short_len > 1 and short_len != math.ceil(g.order() / 2) and short_len != math.floor(g.order() / 2):
-                hm = False
-                continue
-        if not hm:
-            break
-    if hm: hm_cycles.append(cycle)
+start = time.time()
+poly1 = mc.calculate()
+end = time.time()
+print(poly1)
+print('CK alg. elapsed time:', end - start)
+
+
+atr_obj = Atr([1])
+
+start = time.time()
+poly2 = atr_obj.relpoly_binary_improved(g)
+end = time.time()
+print(graphtools.polynomial2binomial(poly2))
+print('DC basic elapsed time:', end - start)
