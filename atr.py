@@ -9,7 +9,7 @@ class Atr(object):
     def __init__(self, modules):
         self.modules = modules
 
-    def relpoly_binary_improved(self, g):
+    def calculate_reliability(self, g):
         """
         This is the improved contraction-deletion algorithm. In each recursion, if there exist some method
         that can retrieve the Reliability Polynomial directly or with less cost than another recursion,
@@ -75,10 +75,10 @@ class Atr(object):
 
                 gi.remove_edge(*e)
                 # AdjMaBox.plot(other)
-                rec_deleted = self.relpoly_binary_improved(gi)
+                rec_deleted = self.calculate_reliability(gi)
                 # AdjMaBox.plot(contracted)
 
-                rec_contracted = self.relpoly_binary_improved(contracted)
+                rec_contracted = self.calculate_reliability(contracted)
 
                 polynomial *= sympy.Poly(p) * rec_contracted + sympy.Poly(1 - p) * rec_deleted
 
@@ -129,10 +129,10 @@ class Atr(object):
 
                 other.remove_edge(*e)
                 # AdjMaBox.plot(other)
-                rec_deleted = self.relpoly_binary_improved(other, filter_depth)
+                rec_deleted = self.calculate_reliability(other, filter_depth)
                 # AdjMaBox.plot(contracted)
 
-                rec_contracted = self.relpoly_binary_improved(contracted, filter_depth)
+                rec_contracted = self.calculate_reliability(contracted, filter_depth)
 
                 polynomial *= sympy.Poly(p) * rec_contracted + sympy.Poly(1 - p) * rec_deleted
 

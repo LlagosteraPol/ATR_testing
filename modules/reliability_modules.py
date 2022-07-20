@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class Module(ABC):
-    # TODO: Use an observer to detect its subclasses?
+class RelModule(ABC):
     @abstractmethod
     def __init__(self, g):
         self.g = g

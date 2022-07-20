@@ -1,3 +1,5 @@
+from modules.reliability_modules import RelModule
+
 import collections
 import copy
 import itertools as itt
@@ -5,12 +7,12 @@ import math
 import networkx as nx
 
 # from itertools import cycle
-from modules import Module
+
 
 import graphtools
 
 
-class ModuleCake(Module):
+class RelModuleCake(RelModule):
     base_cycle = list()
 
     def __init__(self, g):

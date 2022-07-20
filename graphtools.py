@@ -119,3 +119,14 @@ def refine_polynomial_coefficients(polynomial):
         refined_coefficients.append(round(coefficient, 0))
 
     return refined_coefficients
+
+def get_multiedge_number(g):
+    edge_dict = {}
+    for edge in nx.Graph(g).edges():
+        edge_dict[edge] = g.number_of_edges(edge[0], edge[1])
+
+    balanced = True
+    if max(edge_dict.values()) != min(edge_dict.values()):
+        balanced = False
+
+    return edge_dict, balanced
