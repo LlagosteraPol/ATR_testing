@@ -6,17 +6,14 @@ import itertools as itt
 import math
 import networkx as nx
 
-# from itertools import cycle
-
-
 import graphtools
 
 
-class RelModuleCake(RelModule):
+class ModuleCake(RelModule):
     base_cycle = list()
 
     def __init__(self, g):
-        self.g = g
+        self.g = nx.Graph(g)
 
     def identify(self):
         # If there is at least one node with degree < 2 or > 3, then it's not a cake
@@ -59,9 +56,9 @@ class RelModuleCake(RelModule):
         coeffs = list()
         tau = round(len(c_paths) / 2) + 1  # Maximum number of cuts without disconnecting the graph (== n_chords + 1)
         for i in range(0, tau + 1):
-            coeffs.append(self.__cake_rel_coeff(i, c_paths))
+            coeffs.append(int(self.__cake_rel_coeff(i, c_paths)))
 
-        return coeffs
+        return graphtools.coefficients2polynomial(coeffs, self.g.size())
 
     def __cake_rel_coeff(self, alpha, c_paths):
         """

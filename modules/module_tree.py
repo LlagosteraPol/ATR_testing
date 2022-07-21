@@ -6,7 +6,7 @@ import sympy
 import graphtools
 
 
-class RelModuleTree(RelModule):
+class ModuleTree(RelModule):
 
     def __init__(self, g):
         self.g = g

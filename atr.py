@@ -1,66 +1,53 @@
 import networkx as nx
 import sympy
+import sys
 from random import choice
+# Local Libraries
+import graphtools
+from modules import *
 
-class Atr(object):
-    modules = []
 
-    # default constructor
-    def __init__(self, modules):
-        self.modules = modules
+def calculate_reliability(g, modul_lst=[], prune=False):
+    """
+    This is the improved contraction-deletion algorithm. In each recursion, if there exist some method
+    that can retrieve the Reliability Polynomial directly or with less cost than another recursion,
+    will retrieve it and stop the recursion in that generated sub-graph.
+    :param g: networkx graph
+    :return: the reliability Polynomial of the given graph or another execution of the method.
+    """
+    # print("---------Input graph-----")
+    p = sympy.symbols('p')
+    polynomial = 1
+    g = nx.MultiGraph(g) # Since DC needs a graph defined as multigraph to work (ex. when edge contraction)
 
-    def calculate_reliability(self, g):
-        """
-        This is the improved contraction-deletion algorithm. In each recursion, if there exist some method
-        that can retrieve the Reliability Polynomial directly or with less cost than another recursion,
-        will retrieve it and stop the recursion in that generated sub-graph.
-        :param g: networkx graph
-        :return: the reliability Polynomial of the given graph or another execution of the method.
-        """
-        # print("---------Input graph-----")
-        # AdjMaBox.plot(g)
-        p = sympy.symbols('p')
-        polynomial = 1
-        g = nx.MultiGraph(g)
+    # If the graph is not connected, then it has a rel poly of 0
+    if not nx.is_connected(g):
+        return sympy.Poly(0, p)
 
-        """
-        # If the graph is k > 2 regular, proceed with contraction-deletion
-        elif nx.is_distance_regular(g) and g.degree(choice(g.nodes())) > 2:
-            for other in type[1]:
-                # if other type, then we perform the two subcases of the Factoring theorem.
-                # Look for joined cycles, to optimize the choosed edge
-                # common_edge = GraphTools.get_a_common_edge(other)
+    # If we only have 0 edges and 1 vertex, is connected, so we return 1.
+    elif len(g.edges()) == 0:
+        return sympy.Poly(1, p)
 
-                # e = copy.deepcopy(common_edge)
-                e = choice(list(other.edges()))
+    # Else, separate the graph into subgraphs
+    else:
+        # Encapsulate the given graph with a list
+        if not isinstance(g, list):
+            g_lst = [g]
 
-                contracted = nx.contracted_edge(other, e, self_loops=False)  # TODO: Expected tuple
+        if prune:
+            subgraphs = graphtools.prune_graph(g_lst[0])
+            g_lst = subgraphs['trees'] + subgraphs['cycles']
 
-                other.remove_edge(*e)
-                # AdjMaBox.plot(other)
-                rec_deleted = GraphRel.__recursive_improved(other)
-                # AdjMaBox.plot(contracted)
+        for gi in g_lst:
+            graph_identified = False
+            for module in modul_lst:
+                obj = getattr(sys.modules[__name__], module)(g)
+                graph_identified = obj.identify()
+                if graph_identified:
+                    polynomial *= obj.calculate()
+                    break
 
-                rec_contracted = GraphRel.__recursive_improved(contracted)
-
-                polynomial *= sympy.Poly(p) * rec_contracted + sympy.Poly(1 - p) * rec_deleted
-        """
-
-        # If the graph is not connected, then it has a rel poly of 0
-        if not nx.is_connected(g):
-            return sympy.Poly(0, p)
-
-        # If we only have 0 edges and 1 vertex, is connected, so we return 1.
-        elif len(g.edges()) == 0:
-            return sympy.Poly(1, p)
-
-        # Else, separate the graph into subgraphs
-        else:
-            # Encapsulate the given graph with a list
-            if not isinstance(g, list):
-                g_lst = [g]
-
-            for gi in g_lst:
+            if not graph_identified:
                 # if other type, then we perform the two subcases of the Factoring theorem.
                 # Look for joined cycles, to optimize the choosed edge
 
@@ -75,14 +62,14 @@ class Atr(object):
 
                 gi.remove_edge(*e)
                 # AdjMaBox.plot(other)
-                rec_deleted = self.calculate_reliability(gi)
+                rec_deleted = calculate_reliability(gi, modul_lst, prune)
                 # AdjMaBox.plot(contracted)
 
-                rec_contracted = self.calculate_reliability(contracted)
+                rec_contracted = calculate_reliability(contracted, modul_lst, prune)
 
                 polynomial *= sympy.Poly(p) * rec_contracted + sympy.Poly(1 - p) * rec_deleted
 
-        return polynomial
+    return polynomial
 
 
 

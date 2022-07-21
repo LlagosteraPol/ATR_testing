@@ -11,11 +11,12 @@ def prune_graph(g):
     :param g: networkx graph.
     :return: <dict> {'trees': induced tree sub-graphs, 'cycles': induced cycle sub-graphs}.
     """
-    g = nx.Graph(g)  # Turns the graph into simple undirected graph
+
     g_copy = copy.deepcopy(g)
+    g_copy = nx.Graph(g_copy) # Turns the graph into simple undirected graph
 
     # Get the cycle basis of the given graph
-    cycle_basis = nx.cycle_basis(g)
+    cycle_basis = nx.cycle_basis(g_copy)
 
     # Turns each cycle into a networkx graph
     induced_edges = list()
@@ -23,16 +24,19 @@ def prune_graph(g):
         induced_edges += list(nx.induced_subgraph(g, induced).edges())
 
     # Remove all cycles from the graph copy
-    g_copy.remove_edges_from(induced_edges)
-    g_copy.remove_nodes_from(list(nx.isolates(g_copy)))
+    g_trees = copy.deepcopy(g)
+    for edge in induced_edges:
+        g_trees.remove_edges_from([edge] * g.number_of_edges(edge[0], edge[1]))
+    g_trees.remove_nodes_from(list(nx.isolates(g_trees)))
 
     # Remove all the tree parts from the original graph
-    g.remove_edges_from(g_copy.edges())
-    g.remove_nodes_from(list(nx.isolates(g)))
+    g_cycles = copy.deepcopy(g)
+    g_cycles.remove_edges_from(g_trees.edges())
+    g_cycles.remove_nodes_from(list(nx.isolates(g_cycles)))
 
     # Return a list of trees and cycles (that forms the given graph)
-    return [{'trees': [g_copy.subgraph(c).copy() for c in nx.connected_components(g_copy)]},
-            {'cycles': [g.subgraph(c).copy() for c in nx.connected_components(g)]}]
+    return {'trees': [g_trees.subgraph(c).copy() for c in nx.connected_components(g_trees)],
+            'cycles': [g_cycles.subgraph(c).copy() for c in nx.connected_components(g_cycles)]}
 
 def get_edge_degree(g):
     """
@@ -104,6 +108,18 @@ def polynomial2binomial(polynomial):
     return binomial, coefficients
 
 
+def coefficients2polynomial(coefficients, size):
+    p = sympy.symbols('p')
+
+    count = 0
+    polynomial = 0
+    for coeff in coefficients:
+        polynomial += coeff*p**(size-count)*(1-p)**count
+        count += 1
+
+    return sympy.poly(polynomial)
+
+
 def refine_polynomial_coefficients(polynomial):
     """
     This method will round the coefficients of the polynomial that are almost zero (ex. at the order of e-10).
@@ -120,6 +136,7 @@ def refine_polynomial_coefficients(polynomial):
 
     return refined_coefficients
 
+
 def get_multiedge_number(g):
     edge_dict = {}
     for edge in nx.Graph(g).edges():
@@ -130,3 +147,12 @@ def get_multiedge_number(g):
         balanced = False
 
     return edge_dict, balanced
+
+
+def get_all_subclasses(cls):
+    all_subclasses = []
+    for subclass in cls.__subclasses__():
+        all_subclasses.append(subclass)
+        all_subclasses.extend(get_all_subclasses(subclass))
+
+    return all_subclasses
