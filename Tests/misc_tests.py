@@ -9,12 +9,9 @@ import graphtools
 #from modules.module_cycle import ModuleCycle
 #from modules.module_cake import ModuleCake
 
-from modules import *
+from relmodules import *
 
 from atr import calculate_reliability
-
-
-
 
 def get_all_subclasses(cls):
     all_subclasses = []

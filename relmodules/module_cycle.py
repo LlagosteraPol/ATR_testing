@@ -1,4 +1,4 @@
-from modules.reliability_modules import RelModule
+from relmodules.reliability_modules import RelModule
 
 import itertools as itt
 import networkx as nx
@@ -12,14 +12,15 @@ class ModuleCycle(RelModule):
         self.g = g
 
     def identify(self):
+        """
+        Identifies the graph if its a simple cycle or multi-cycle
+        :return: True if the given graph is a simple cycle or multi-cycle, False otherwise
+        """
         return nx.is_k_regular(nx.Graph(self.g), 2)
 
     def calculate(self):
         """
         Get the polynomial reliability of any cycle (multiedge or not)
-        :param bal_pedges: <tuple> (bool, int); <bool> if is parallel, <int> number of parallel edges
-        :param cycle_edges - <list> of maps <key:edge, value:n_edges> where each map contains the information
-            of the edges of one cycle
         :return: Reliability polynomial of the graph
         """
         p = sympy.symbols('p')

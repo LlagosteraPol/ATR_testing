@@ -1,4 +1,4 @@
-from modules.reliability_modules import RelModule
+from relmodules.reliability_modules import RelModule
 
 import networkx as nx
 import sympy
@@ -12,13 +12,15 @@ class ModuleTree(RelModule):
         self.g = g
 
     def identify(self):
+        """
+        Identifies the graph if its a tree or multi-tree
+        :return: True if the given graph is a tree or multi-tree, False otherwise
+        """
         return nx.is_tree(nx.Graph(self.g))
 
     def calculate(self):
         """
         Get the polynomial reliability of any tree (multiedge or not)
-        :param bal_pedges: <tuple> (bool, int); <bool> if is parallel, <int> number of parallel edges
-        :param tree_edges: <list> of the edges of the graph tree
         :return: Reliability polynomial of the graph
         """
         p = sympy.symbols('p')

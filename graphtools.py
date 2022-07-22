@@ -9,7 +9,7 @@ def prune_graph(g):
     """
     Extract the tree parts of the given network.
     :param g: networkx graph.
-    :return: <dict> {'trees': induced tree sub-graphs, 'cycles': induced cycle sub-graphs}.
+    :return: <dict> {'trees': induced tree sub-graphs, 'cycles': cycle sub-graphs}.
     """
 
     g_copy = copy.deepcopy(g)
@@ -37,6 +37,7 @@ def prune_graph(g):
     # Return a list of trees and cycles (that forms the given graph)
     return {'trees': [g_trees.subgraph(c).copy() for c in nx.connected_components(g_trees)],
             'cycles': [g_cycles.subgraph(c).copy() for c in nx.connected_components(g_cycles)]}
+
 
 def get_edge_degree(g):
     """
@@ -109,6 +110,11 @@ def polynomial2binomial(polynomial):
 
 
 def coefficients2polynomial(coefficients, size):
+    """
+    This method transforms the given coefficients to its reliability polynomial.
+    :param coefficients: coefficients of the reliability polynomial
+    :return: Polynomial
+    """
     p = sympy.symbols('p')
 
     count = 0
@@ -138,6 +144,12 @@ def refine_polynomial_coefficients(polynomial):
 
 
 def get_multiedge_number(g):
+    """
+    This method retrieves the number of multi-links between each pair of adjacent nodes.
+    :param g: networkx graph
+    :return: a dictionary {edge: number} and a boolean set to True if all pair of adjacent nodes has the same amount of
+    edges connecting them (False otherwise).
+    """
     edge_dict = {}
     for edge in nx.Graph(g).edges():
         edge_dict[edge] = g.number_of_edges(edge[0], edge[1])
@@ -150,6 +162,11 @@ def get_multiedge_number(g):
 
 
 def get_all_subclasses(cls):
+    """
+    Method that retrieves the name of the sub-classes (if any) of the given class.
+    :param cls: name of the class to know if has subclasses
+    :return: a list with all the sub-class names (in string format)
+    """
     all_subclasses = []
     for subclass in cls.__subclasses__():
         all_subclasses.append(subclass)

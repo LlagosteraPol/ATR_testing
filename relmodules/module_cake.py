@@ -1,4 +1,4 @@
-from modules.reliability_modules import RelModule
+from relmodules.reliability_modules import RelModule
 
 import collections
 import copy
@@ -13,9 +13,17 @@ class ModuleCake(RelModule):
     base_cycle = list()
 
     def __init__(self, g):
-        self.g = nx.Graph(g)
+        self.g = g
 
     def identify(self):
+        """
+        Identifies the graph if its a not multi-edge cake graph.
+        :return: True if it's a cake graph (simple, not multiedge), False otherwise
+        """
+        # The algorithm doesn't work with multiedge cake graphs
+        if self.g.is_multigraph():
+            return False
+
         # If there is at least one node with degree < 2 or > 3, then it's not a cake
         if min(nx.degree(self.g))[1] < 2 or max(nx.degree(self.g))[1] > 3:
             return False
@@ -49,8 +57,8 @@ class ModuleCake(RelModule):
 
     def calculate(self):
         """
-        Calculates the reliability polynomial coefficients of a 'Cake' graph.
-        :return: Reliability Polynomial coefficients of the given 'Cake' graph
+        Calculates the reliability polynomial coefficients of a Cake graph.
+        :return: Reliability Polynomial of the given Cake graph
         """
         c_paths = self.__get_cg_cpaths()
         coeffs = list()
