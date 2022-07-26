@@ -36,7 +36,7 @@ print(graphtools.polynomial2binomial(mc.calculate()))
 poly = calculate_reliability(g_cake, prune=False)
 print(graphtools.polynomial2binomial(poly))
 
-"""
+
 print('Multi Tree:')
 g_tree = nx.MultiGraph([(1, 2), (2, 3), (3, 4), (4, 5), (3, 6), (6, 7), (5, 8), (5, 9), (5, 9)])
 print(g_tree)
@@ -51,7 +51,7 @@ print(graphtools.polynomial2binomial(mt.calculate()))
 poly = calculate_reliability(g_tree, prune=False)
 print(graphtools.polynomial2binomial(poly))
 
-"""
+
 print('Multi graph tree+cycles:')
 gs = nx.MultiGraph([(1,2), (1,2), (2,3), (2,4), (3,4), (3,4),(4,5),(5,6),(5,7),(6,7)])
 print(gs)
@@ -67,3 +67,10 @@ print(graphtools.polynomial2binomial(poly))
 poly = calculate_reliability(gs, prune=False)
 print(graphtools.polynomial2binomial(poly))
 """
+
+# Testing cake module:
+g = nx.MultiGraph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 1), (1, 3), (3, 5)])
+
+ct = getattr(sys.modules[__name__], 'ModuleCake')(g)
+
+print(ct.identify())

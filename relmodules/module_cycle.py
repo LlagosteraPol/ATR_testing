@@ -6,6 +6,7 @@ import sympy
 
 import graphtools
 
+
 class ModuleCycle(RelModule):
 
     def __init__(self, g):

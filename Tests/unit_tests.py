@@ -17,20 +17,20 @@ class TestAtr(unittest.TestCase):
                                 (13,16),(14,17),(16,18),(18,19),(18,19),(19,20),(19,21),(1,20),(3,21)])
 
     def test_calculate_reliability(self):
-        """
+
         start = time.time()
         poly1 = atr.calculate_reliability(self.g)
         end = time.time()
         bin_poly1, bin_coeff1 = graphtools.polynomial2binomial(poly1)
         print('DC basic elapsed time:', end - start)
-        """
+
         start = time.time()
         poly2 = atr.calculate_reliability(self.g, prune=True, modules=['ModuleTree', 'ModuleCycle', 'ModuleCake'])
         end = time.time()
         bin_poly2, bin_coeff2 = graphtools.polynomial2binomial(poly2)
         print('Dc with prunning time:', end - start)
 
-        #self.assertEqual(bin_coeff1, bin_coeff2, "Polynomial not correct")
+        self.assertEqual(bin_coeff1, bin_coeff2, "Polynomial not correct")
 
 
 class TestModuleTree(unittest.TestCase):

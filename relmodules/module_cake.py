@@ -24,13 +24,14 @@ class ModuleCake(RelModule):
         if graphtools.get_total_multiedge_number(self.g) > 0:
             return False
 
+        degree_lst = nx.degree(self.g)
         # If there is at least one node with degree < 2 or > 3, then it's not a cake
-        if min(nx.degree(self.g))[1] < 2 or max(nx.degree(self.g))[1] > 3:
+        if min(degree_lst, key=lambda x:x[1])[1] < 2 or max(degree_lst, key=lambda x:x[1])[1] > 3:
             return False
 
         # If the previous condition is not met but the maximum degree of the nodes of
         # the graph is == 2, then it's a cycle
-        if max(nx.degree(self.g))[1] == 2:
+        if max(degree_lst, key=lambda x:x[1])[1] == 2:
             return False
 
         # TODO: Implement the algorithm to efficiently find Hamiltonian Cycles purposed by Alhalabi_2016?
@@ -67,11 +68,12 @@ class ModuleCake(RelModule):
             coeffs.append(int(self.__cake_rel_coeff(i, c_paths)))
 
         #TODO: Debug
+        """
         poly1 = atr.calculate_reliability(self.g)
         bin_poly1, bin_coeff1 = graphtools.polynomial2binomial(poly1)
         if bin_coeff1 != coeffs:
             print('Bad cake: ',self.g.edges())
-
+        """
         return graphtools.coefficients2polynomial(coeffs, self.g.size())
 
     def __cake_rel_coeff(self, alpha, c_paths):
