@@ -4,10 +4,11 @@ import sys
 from random import choice
 # Local Libraries
 import graphtools
+from selector import EdgeSelector
 from relmodules import *
 
 
-def calculate_reliability(g, modules=[], prune=False):
+def calculate_reliability(g, modules=[], prune=False, edge_selector = 'select_random'):
     """
     This is the improved contraction-deletion algorithm. In each recursion, all the activated modules will analyze if
     the graph (or sub-graph if it's not the first iteration) can be calculated by them, if so will retrieve the
@@ -16,6 +17,8 @@ def calculate_reliability(g, modules=[], prune=False):
     :param g: networkx graph
     :param modules: list of the class name modules desired to be activated in order to calculate the reliability
     :param prune: boolean, True to separate the tree parts in the graph
+    :param edge_selector: name of the function from the class EdgeSelector which will be used to select the edge for the
+    contraction/deletion algorithm.
     :return: the reliability Polynomial of the given graph.
     """
     # print("---------Input graph-----")
@@ -53,13 +56,8 @@ def calculate_reliability(g, modules=[], prune=False):
             if not graph_identified:
                 # if other type, then we perform the two subcases of the Factoring theorem.
                 # Look for joined cycles, to optimize the choosed edge
-
-                # TODO: The function .get_a_common_edge doesn't work due a maltfunction of the networkx function minimum_cycle_basis
-                # common_edge = GraphTools.get_a_common_edge(other) # Not working for ordered cycles
-                # e = copy.deepcopy(common_edge)
-
-                # TODO: Needs opitmization
-                e = choice(list(gi.edges()))  # Random choice
+                select_edge = getattr(EdgeSelector(gi), edge_selector)
+                e = select_edge()
 
                 contracted = nx.contracted_edge(gi, e, self_loops=False)  # TODO: Expected tuple
 

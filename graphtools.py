@@ -161,6 +161,17 @@ def get_multiedge_number(g):
     return edge_dict, balanced
 
 
+def get_total_multiedge_number(g):
+    """
+    Gives the total number of multiedges of the given graph.
+    :param g: networkx graph
+    :return: total number of multiedges
+    """
+    arr = nx.to_numpy_matrix(g)
+    num_multiedges = np.sum(arr >= 2) / 2
+    return num_multiedges
+
+
 def get_all_subclasses(cls):
     """
     Method that retrieves the name of the sub-classes (if any) of the given class.

@@ -7,7 +7,7 @@ import math
 import networkx as nx
 
 import graphtools
-
+import atr #debug
 
 class ModuleCake(RelModule):
     base_cycle = list()
@@ -21,7 +21,7 @@ class ModuleCake(RelModule):
         :return: True if it's a cake graph (simple, not multiedge), False otherwise
         """
         # The algorithm doesn't work with multiedge cake graphs
-        if self.g.is_multigraph():
+        if graphtools.get_total_multiedge_number(self.g) > 0:
             return False
 
         # If there is at least one node with degree < 2 or > 3, then it's not a cake
@@ -65,6 +65,12 @@ class ModuleCake(RelModule):
         tau = round(len(c_paths) / 2) + 1  # Maximum number of cuts without disconnecting the graph (== n_chords + 1)
         for i in range(0, tau + 1):
             coeffs.append(int(self.__cake_rel_coeff(i, c_paths)))
+
+        #TODO: Debug
+        poly1 = atr.calculate_reliability(self.g)
+        bin_poly1, bin_coeff1 = graphtools.polynomial2binomial(poly1)
+        if bin_coeff1 != coeffs:
+            print('Bad cake: ',self.g.edges())
 
         return graphtools.coefficients2polynomial(coeffs, self.g.size())
 
