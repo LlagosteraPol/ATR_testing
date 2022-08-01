@@ -25,7 +25,7 @@ class TestAtr(unittest.TestCase):
         print('DC basic elapsed time:', end - start)
 
         start = time.time()
-        poly2 = atr.calculate_reliability(self.g, prune=True, modules=['ModuleTree', 'ModuleCycle', 'ModuleCake'])
+        poly2 = atr.calculate_reliability(self.g, prune=True, modules=['ModuleCycle'])
         end = time.time()
         bin_poly2, bin_coeff2 = graphtools.polynomial2binomial(poly2)
         print('Dc with prunning time:', end - start)
