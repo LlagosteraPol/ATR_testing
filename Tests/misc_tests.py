@@ -4,10 +4,11 @@ import sys
 
 import graphtools
 
-#from modules.reliability_modules import RelModule
-#from modules.module_tree import ModuleTree
-#from modules.module_cycle import ModuleCycle
-#from modules.module_cake import ModuleCake
+#from relmodules.reliability_modules import RelModule
+#from relmodules.module_tree import ModuleTree
+#from relmodules.module_cycle import ModuleCycle
+#from relmodules.module_cake import ModuleCake
+from relmodules.module_cycletree import ModuleCycleTree
 
 from relmodules import *
 
@@ -69,8 +70,15 @@ print(graphtools.polynomial2binomial(poly))
 """
 
 # Testing cake module:
-g = nx.MultiGraph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 1), (1, 3), (3, 5)])
+#g = nx.MultiGraph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 1), (1, 3), (3, 5)])
 
-ct = getattr(sys.modules[__name__], 'ModuleCake')(g)
+#ct = getattr(sys.modules[__name__], 'ModuleCake')(g)
 
-print(ct.identify())
+#print(ct.identify())
+
+#Testing cycleTree module
+g1 = nx.Graph([(1, 2), (2, 3), (3, 1), (3, 4), (3, 5), (4, 5), (5, 6), (5, 7), (6, 7)])
+g2 = nx.Graph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 1), (3, 7), (7, 8), (8, 9), (9, 3), (9, 10), (10, 11), (9, 11)])
+cycletreemodule = ModuleCycleTree(g2)
+
+poly = cycletreemodule.calculate()

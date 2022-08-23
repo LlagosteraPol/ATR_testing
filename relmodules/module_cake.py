@@ -9,6 +9,7 @@ import networkx as nx
 import graphtools
 import atr #debug
 
+
 class ModuleCake(RelModule):
     base_cycle = list()
 
