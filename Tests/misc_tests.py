@@ -82,12 +82,12 @@ g1 = nx.MultiGraph([(1, 2), (2, 3), (3, 1), (3, 4), (3, 5), (4, 5), (5, 6), (5, 
 g2 = nx.Graph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 1), (3, 7), (7, 8), (8, 9), (9, 3), (9, 10), (10, 11), (9, 11)])
 
 
-poly1 = atr.calculate_reliability(g1)
+poly1 = atr.calculate_reliability(g2)
 bin_poly1, bin_coeff1 = graphtools.polynomial2binomial(poly1)
 print(graphtools.polynomial2binomial(poly1))
 
-cycletreemodule = ModuleCycleTree(g1)
-poly2 = cycletreemodule.calculate()
-bin_poly2, bin_coeff2 = graphtools.polynomial2binomial(poly2)
-
-print(graphtools.polynomial2binomial(poly2))
+cycletreemodule = ModuleCycleTree(g2)
+if cycletreemodule.identify():
+    poly2 = cycletreemodule.calculate()
+    bin_poly2, bin_coeff2 = graphtools.polynomial2binomial(poly2)
+    print(graphtools.polynomial2binomial(poly2))

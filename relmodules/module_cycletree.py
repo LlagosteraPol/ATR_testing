@@ -19,8 +19,16 @@ class ModuleCycleTree(RelModule):
         Identifies the graph if its a tree of cycles
         :return: True if the given graph is a tree of cycles, False otherwise
         """
-        if self.g.order() == self.g.size() - (len(self.cycles) - 1):
-            return True
+        basis_nodes = 0
+        node_set = set()
+        for cycle in self.cycles:
+            basis_nodes += len(cycle)
+            node_set.update(cycle)
+
+        if len(node_set) == self.g.order():
+            if self.g.order() == basis_nodes - len(self.cycles) + 1:
+                return True
+
         return False
 
     def calculate(self):
