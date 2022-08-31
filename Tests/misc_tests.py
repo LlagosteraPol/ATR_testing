@@ -11,7 +11,7 @@ import graphtools
 #from relmodules.module_cake import ModuleCake
 from relmodules.module_cycletree import ModuleCycleTree
 
-from relmodules import *
+import relmodules
 
 from atr import calculate_reliability
 
@@ -25,7 +25,7 @@ def get_all_subclasses(cls):
 
 
 # pass base class as argument
-print(get_all_subclasses(RelModule))
+print(get_all_subclasses(relmodules.RelModule))
 """
 print('Cake graph:')
 g_cake = nx.Graph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 1), (1, 5), (2, 6), (3, 7), (4, 8)])
@@ -77,6 +77,7 @@ print(graphtools.polynomial2binomial(poly))
 
 #print(ct.identify())
 
+"""
 #Testing cycleTree module
 g1 = nx.MultiGraph([(1, 2), (2, 3), (3, 1), (3, 4), (3, 5), (4, 5), (5, 6), (5, 7), (6, 7)])
 g2 = nx.Graph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 1), (3, 7), (7, 8), (8, 9), (9, 3), (9, 10), (10, 11), (9, 11)])
@@ -91,3 +92,62 @@ if cycletreemodule.identify():
     poly2 = cycletreemodule.calculate()
     bin_poly2, bin_coeff2 = graphtools.polynomial2binomial(poly2)
     print(graphtools.polynomial2binomial(poly2))
+"""
+"""
+#Graph6 test
+g = nx.Graph([(1, 2), (2, 3), (3, 4), (4, 1)])
+nx.write_graph6(g, "test.txt", header=False)
+g = nx.read_graph6("test.txt")
+"""
+"""
+#Basic ATR test
+print('-------------------------Test ATR-------------------------')
+g = nx.MultiGraph( [(1,2), (1,2), (1,3), (2,3), (2,3), (2,3),
+                    (3,4), (4,5), (4,5), (5,6), (5,6), (5,6), (6,7),
+                    (7,8), (8,9), (9,10), (10,11), (11,12), (12,7),
+                    (8,11), (9,12)] )
+
+start = time.time()
+poly1 = atr.calculate_reliability(g)
+end = time.time()
+bin_poly1, bin_coeff1 = graphtools.polynomial2binomial(poly1)
+print('DC basic elapsed time:', end - start)
+
+start = time.time()
+poly2 = atr.calculate_reliability(g, modules=['ModuleTree','ModuleCycle', 'ModuleCycleTree', 'ModuleCake'])
+end = time.time()
+bin_poly2, bin_coeff2 = graphtools.polynomial2binomial(poly2)
+print('Dc all Modules time:', end - start)
+
+start = time.time()
+poly3 = atr.calculate_reliability(g, prune=True, modules=['ModuleTree', 'ModuleCycle', 'ModuleCake'])
+end = time.time()
+bin_poly3, bin_coeff3 = graphtools.polynomial2binomial(poly3)
+print('Dc specific with prunning time:', end - start)
+
+print(bin_poly1)
+print(bin_poly2)
+print(bin_poly3)
+"""
+
+# Testing ModuleCake
+
+#g = nx.Graph([(1,2), (2,3), (3,4), (4,5), (5,6), (6,7), (7,8), (8,9), (9,10), (10,11), (11,1), (3,8), (5,10), (6,11)])
+#g  = nx.Graph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 1), (1, 5), (2, 6), (3, 7)])
+g = nx.MultiGraph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 1), (1, 5), (2, 6), (3, 7), (4, 8)])
+
+cakemodule = relmodules.ModuleCake(g)
+
+start = time.time()
+poly1 = atr.calculate_reliability(g)
+end = time.time()
+bin_poly1, bin_coeff1 = graphtools.polynomial2binomial(poly1)
+print('DC basic elapsed time:', end - start)
+print(bin_poly1)
+
+start = time.time()
+poly2 = cakemodule.calculate()
+end = time.time()
+bin_poly2, bin_coeff2 = graphtools.polynomial2binomial(poly2)
+print('Cake alg. elapsed time:', end - start)
+print(bin_poly2)

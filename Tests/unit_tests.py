@@ -32,12 +32,14 @@ class TestAtr(unittest.TestCase):
         print('Dc with prunning time:', end - start)
 
         self.assertEqual(bin_coeff1, bin_coeff2, "Polynomial not correct")
+        print(bin_poly2)
 
 
 class TestModuleTree(unittest.TestCase):
 
     def setUp(self):
-        self.g = nx.MultiGraph([(1, 2), (2, 3), (3, 4), (4, 5), (3, 6), (6, 7), (5, 8), (5, 9), (5, 9)])
+        #self.g = nx.MultiGraph([(1, 2), (2, 3), (3, 4), (4, 5), (3, 6), (6, 7), (5, 8), (5, 9), (5, 9)])
+        self.g = nx.MultiGraph([(1, 2), (1, 2), (1, 2), (2, 3), (2, 3), (3, 4)])
         self.treemodule = relmodules.ModuleTree(self.g)
 
     def testModule(self):
@@ -58,13 +60,15 @@ class TestModuleTree(unittest.TestCase):
             print('Tree alg. elapsed time:', end - start)
 
             self.assertEqual(bin_coeff1, bin_coeff2, "Polynomial not correct")
+            print(bin_poly2)
 
 
 class TestModuleCycle(unittest.TestCase):
 
     def setUp(self):
-        self.g = nx.MultiGraph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 1),
-                                (1, 2), (3, 4), (7, 8), (7, 8)])
+        #self.g = nx.MultiGraph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 1),
+        #                        (1, 2), (3, 4), (7, 8), (7, 8)])
+        self.g = nx.MultiGraph([(1, 2), (1, 2), (1, 2), (2, 3), (2, 3), (3, 4), (4, 1), (4, 1)])
         self.cyclemodule = relmodules.ModuleCycle(self.g)
 
     def testModule(self):
@@ -84,13 +88,14 @@ class TestModuleCycle(unittest.TestCase):
             print('Cycle alg. elapsed time:', end - start)
 
             self.assertEqual(bin_coeff1, bin_coeff2, "Polynomial not correct")
+            print(bin_poly2)
 
 
 class TestModuleCake(unittest.TestCase):
 
     def setUp(self):
+        # self.g  = nx.Graph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 1), (1, 5), (2, 6), (3, 7)])
         self.g = nx.MultiGraph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 1), (1, 5), (2, 6), (3, 7), (4, 8)])
-        #self.g  = nx.Graph([(1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 1), (1, 5), (2, 6), (3, 7)])
         self.cakemodule = relmodules.ModuleCake(self.g)
 
     def testModule(self):
@@ -110,10 +115,13 @@ class TestModuleCake(unittest.TestCase):
             print('Cake alg. elapsed time:', end - start)
 
             self.assertEqual(bin_coeff1, bin_coeff2, "Polynomial not correct")
+            print(bin_poly2)
 
 class TestModuleCycleTree(unittest.TestCase):
     def setUp(self):
-        self.g = nx.Graph([(1, 2), (2, 3), (3, 1), (3, 4), (3, 5), (4, 5), (5, 6), (5, 7), (6, 7)])
+        #self.g = nx.Graph([(1, 2), (2, 3), (3, 1), (3, 4), (3, 5), (4, 5), (5, 6), (5, 7), (6, 7)])
+        self.g = nx.MultiGraph([(1, 2), (1, 3), (2, 3), (3, 4), (3, 6), (4, 5), (5, 6),
+                           (6, 7), (7, 8), (8, 9), (9, 10), (10, 11), (11, 6)])
         self.cycletreemodule = relmodules.ModuleCycleTree(self.g)
 
     def testModule(self):
@@ -133,6 +141,7 @@ class TestModuleCycleTree(unittest.TestCase):
             print('CycleTree alg. elapsed time:', end - start)
 
             self.assertEqual(bin_coeff1, bin_coeff2, "Polynomial not correct")
+            print(bin_poly2)
 
 # run the test
 if __name__ == '__main__':

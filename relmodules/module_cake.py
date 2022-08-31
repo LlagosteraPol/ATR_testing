@@ -62,14 +62,22 @@ class ModuleCake(RelModule):
         Calculates the reliability polynomial coefficients of a Cake graph.
         :return: Reliability Polynomial of the given Cake graph
         """
+        # Calculate the base hamiltonian cycle is not previously calculated (when identify() function not called)
+        if self.base_cycle == list():
+            directed_g = nx.DiGraph(self.g)
+            for cycle in list(nx.simple_cycles(directed_g)):
+                if len(cycle) == len(directed_g.nodes):
+                    self.base_cycle = cycle
+                    break
+
         c_paths = self.__get_cg_cpaths()
         coeffs = list()
         tau = round(len(c_paths) / 2) + 1  # Maximum number of cuts without disconnecting the graph (== n_chords + 1)
         for i in range(0, tau + 1):
             coeffs.append(int(self.__cake_rel_coeff(i, c_paths)))
 
-        #TODO: Debug
         """
+        #Debug
         poly1 = atr.calculate_reliability(self.g)
         bin_poly1, bin_coeff1 = graphtools.polynomial2binomial(poly1)
         if bin_coeff1 != coeffs:
