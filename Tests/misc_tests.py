@@ -129,7 +129,7 @@ print(bin_poly1)
 print(bin_poly2)
 print(bin_poly3)
 """
-
+"""
 # Testing ModuleCake
 
 #g = nx.Graph([(1,2), (2,3), (3,4), (4,5), (5,6), (6,7), (7,8), (8,9), (9,10), (10,11), (11,1), (3,8), (5,10), (6,11)])
@@ -150,4 +150,16 @@ poly2 = cakemodule.calculate()
 end = time.time()
 bin_poly2, bin_coeff2 = graphtools.polynomial2binomial(poly2)
 print('Cake alg. elapsed time:', end - start)
+print(bin_poly2)
+"""
+
+# Edge selector test
+g = nx.MultiGraph([(1, 2), (1, 3), (2, 3), (3, 4), (2, 4)])
+poly1 = atr.calculate_reliability(g, edge_selector='select_min_degree')
+bin_poly1, bin_coeff1 = graphtools.polynomial2binomial(poly1)
+
+poly2 = atr.calculate_reliability(g)
+bin_poly2, bin_coeff2 = graphtools.polynomial2binomial(poly2)
+
+print(bin_poly1)
 print(bin_poly2)

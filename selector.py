@@ -22,7 +22,7 @@ class EdgeSelector:
         :return: edge with minimum degree (sum of its endpoint nodes degree)
         """
         edge_degrees = graphtools.get_edge_degree(self.g)
-        return min(edge_degrees, key=edge_degrees.get)
+        return min(edge_degrees, key=edge_degrees.get)[0:2]
 
     def select_max_degree(self):
         """
@@ -30,4 +30,4 @@ class EdgeSelector:
         :return: edge with maximum degree (sum of its endpoint nodes degree)
         """
         edge_degrees = graphtools.get_edge_degree(self.g)
-        return max(edge_degrees, key=edge_degrees.get)
+        return max(edge_degrees, key=edge_degrees.get)[0:2]
